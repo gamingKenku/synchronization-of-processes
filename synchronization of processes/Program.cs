@@ -23,8 +23,20 @@ namespace synchronization_of_processes
 
         static void SleepTimeIncreaseProd() => sleepTimeProducer += 1000;
         static void SleepTimeIncreaseCons() => sleepTimeConsumer += 1000;
-        static void SleepTimeDecreaseProd() => sleepTimeProducer -= 1000;
-        static void SleepTimeDecreaseCons() => sleepTimeConsumer -= 1000;
+        static void SleepTimeDecreaseProd()
+        {
+            if (sleepTimeProducer < 1000) return;
+
+            sleepTimeProducer -= 1000;
+        }
+
+        static void SleepTimeDecreaseCons()
+        {
+            if (sleepTimeConsumer < 1000) return;
+
+            sleepTimeConsumer -= 1000;
+        }
+
         static void WriteToBuff()
         { 
             int i = 0;

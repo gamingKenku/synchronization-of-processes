@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
 
 namespace synchronization_of_processes
@@ -49,8 +45,8 @@ namespace synchronization_of_processes
                 if (buffer[i] == null)
                 {
                     Console.WriteLine($"i = {i} >> Производитель генерирует число...");
-                    Thread.Sleep(sleepTimeProducer);
                     buffer[i] = rnd.Next(10);
+                    Thread.Sleep(sleepTimeProducer);
                     Console.WriteLine($"i = {i} >> Производитель сгенерировал число: {buffer[i]}");
                 }
                 mutexes[i].ReleaseMutex();
@@ -71,9 +67,9 @@ namespace synchronization_of_processes
                 if (buffer[i] != null)
                 {
                     Console.WriteLine($"i = {i} >> Потребитель читает число...");
-                    Thread.Sleep(sleepTimeConsumer);
-                    Console.WriteLine($"i = {i} >> Потребитель прочитал число " + buffer[i]);
                     buffer[i] = null;
+                    Thread.Sleep(sleepTimeConsumer);
+                    Console.WriteLine($"i = {i} >> Потребитель прочитал число в " + i);
                 }
                 mutexes[i].ReleaseMutex();
                 i++;
@@ -120,6 +116,7 @@ namespace synchronization_of_processes
                 else if (key.KeyChar == '6')
                     if (consumerOnFlag == true)
                     {
+
                         consumerOnFlag = false;
                         Console.WriteLine("Работа потребителя приостановлена.");
                     }

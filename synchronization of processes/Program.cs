@@ -59,17 +59,17 @@ namespace synchronization_of_processes
                 if (producerOnFlag == false)
                     continue;
 
-                // заблокировать мьютекс
-                mutexes[i].WaitOne();
                 if (buffer[i] == null)
                 {
+                    // заблокировать мьютекс для конкретного элемента буфера
+                    mutexes[i].WaitOne();
                     Console.WriteLine($"i = {i} >> Производитель генерирует число...");
-                    buffer[i] = rnd.Next(10);
                     Thread.Sleep(sleepTimeProducer);
-                    Console.WriteLine($"i = {i} >> Производитель сгенерировал число: {buffer[i]} | Буффер в данный момент: {ShowBuffer()}");
+                    buffer[i] = rnd.Next(10);
+                    Console.WriteLine($"i = {i} >> Производитель сгенерировал число: {buffer[i]}      | Буффер в данный момент: {ShowBuffer()}");
+                    // освободить мютекс
+                    mutexes[i].ReleaseMutex();
                 }
-                // освободить мютекс
-                mutexes[i].ReleaseMutex();
 
                 i++;
                 // вернуться в начало буфера
@@ -81,23 +81,26 @@ namespace synchronization_of_processes
         static void ReadFromBuff()
         {
             int i = 0;
+            int? temp;
             while (keepTheJobDone)
             {
                 // пропускать весь цикл, если работа потребителя приостановления
                 if (consumerOnFlag == false)
                     continue;
 
-                // заблокировать мьютекс
-                mutexes[i].WaitOne();
                 if (buffer[i] != null)
                 {
+                    // заблокировать мьютекс для конкретного элемента буфера
+                    mutexes[i].WaitOne();
                     Console.WriteLine($"i = {i} >> Потребитель читает число...");
-                    buffer[i] = null;
                     Thread.Sleep(sleepTimeConsumer);
-                    Console.WriteLine($"i = {i} >> Потребитель прочитал число {buffer[i]} | Буффер в данный момент: {ShowBuffer()}");
+                    temp = buffer[i];
+                    buffer[i] = null;
+                    Console.WriteLine($"i = {i} >> Потребитель прочитал число {temp}             | Буффер в данный момент: {ShowBuffer()}");
+                    // освободить мютекс
+                    mutexes[i].ReleaseMutex();
                 }
-                // освободить мютекс
-                mutexes[i].ReleaseMutex();
+                
                 i++;
 
                 // вернуться в начало буфера
